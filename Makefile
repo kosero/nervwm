@@ -1,3 +1,4 @@
+CC=gcc
 PKG_CONFIG?=pkg-config
 
 PKGS="wlroots-0.19" wayland-server
