@@ -1,44 +1,16 @@
-#define _POSIX_C_SOURCE 200809L
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
 #include <time.h>
 #include <wayland-server-core.h>
-#include <wlroots-0.19/wlr/backend.h>
-#include <wlroots-0.19/wlr/render/allocator.h>
-#include <wlroots-0.19/wlr/render/wlr_renderer.h>
-#include <wlroots-0.19/wlr/types/wlr_output.h>
+#include <wlr/backend.h>
+#include <wlr/render/allocator.h>
+#include <wlr/render/wlr_renderer.h>
+#include <wlr/types/wlr_output.h>
 
-struct nwm_output {
-    struct timespec last_frame;
-    struct nwm_server *server;
-    struct wlr_output *wlr_output;
-    struct wl_list link;
-};
+#include "output.h"
+#include "server.h"
 
-struct nwm_server {
-    struct wl_display *wl_display;
-    struct wl_event_loop *wl_event_loop;
-    struct wlr_backend *backend;
-    struct wl_listener new_output;
-    struct wl_list outputs;
-};
-
-static void new_output_notify(struct wl_listener *listener, void *data) {
-    struct nwm_server *server = wl_container_of(listener, server, new_output);
-    struct wlr_output *wlr_output = data;
-    
-    if (!wl_list_empty(&wlr_output->modes)) {
-        struct wlr_output_mode *mode = wl_container_of(wlr_output->modes.prev, mode, link);
-    }
-
-    struct nwm_output *output = calloc(1, sizeof(struct nwm_output));
-    clock_gettime(CLOCK_MONOTONIC, &output->last_frame);
-    output->server = server;
-    output->wlr_output = wlr_output;
-    wl_list_init(&output->link); // Initialize the link list
-    wl_list_insert(&server->outputs, &output->link);
-}
 
 int main(int argc, char **argv) {
     struct nwm_server server;
@@ -66,4 +38,3 @@ int main(int argc, char **argv) {
 
     return 0;
 }
-

@@ -1,20 +1,20 @@
-CC=gcc
-PKG_CONFIG?=pkg-config
+CC = gcc
+CFLAGS = -I/usr/include/wlroots-0.19 -I/usr/include/pixman-1 -I./include -DWLR_USE_UNSTABLE
+LDFLAGS = -lpixman-1 -lwlroots-0.19 -lwayland-server
 
-PKGS="wlroots-0.19" wayland-server
-CFLAGS_PKG_CONFIG!=$(PKG_CONFIG) --cflags $(PKGS)
-CFLAGS+=$(CFLAGS_PKG_CONFIG)
-LIBS!=$(PKG_CONFIG) --libs $(PKGS)
+SRC = src/nervwm.c src/output.c
+OBJ = $(SRC:.c=.o)
+TARGET = nervwm
 
-all: nervwm
+all: $(TARGET)
 
-nervwm.o: src/nervwm.c
-	$(CC) -c $< -g -Werror $(CFLAGS) -I. -DWLR_USE_UNSTABLE -o $@
-nervwm: nervwm.o
-	$(CC) $^ $> -g -Werror $(CFLAGS) $(LDFLAGS) $(LIBS) -o $@
+$(TARGET): $(OBJ)
+	$(CC) -o $(TARGET) $(OBJ) $(LDFLAGS)
+
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -f nervwm nervwm.o
+	rm -f $(OBJ) $(TARGET)
 
-.PHONY: all clean
-
+.PHONY: clean

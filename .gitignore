@@ -1,2 +1,3 @@
+*.o
 nervwm
-nervwm.o
+compile_flags.txt
