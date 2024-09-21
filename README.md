@@ -2,5 +2,5 @@
 
 ### Dependencies;
 
-* wlroots
+* wlroots-0.19
 * pixman
