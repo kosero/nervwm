@@ -1,11 +1,14 @@
 cmake_minimum_required(VERSION 3.15)
 project(kiranwm C)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 find_package(PkgConfig REQUIRED)
 
 pkg_check_modules(WLROOTS REQUIRED wlroots-0.19 wayland-server)
 
-add_executable(kiranwm src/kiranwm.c)
+file(GLOB SRC_FILES "src/*.c")
+add_executable(kiranwm ${SRC_FILES})
 
 target_include_directories(kiranwm PRIVATE
     ${WLROOTS_INCLUDE_DIRS}
@@ -18,3 +21,4 @@ target_link_libraries(kiranwm PRIVATE ${WLROOTS_LIBRARIES})
 target_link_directories(kiranwm PRIVATE ${WLROOTS_LIBRARY_DIRS})
 
 add_definitions(${WLROOTS_CFLAGS_OTHER})
+
