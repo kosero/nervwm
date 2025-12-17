@@ -1,8 +1,13 @@
-#include "kwm_server.h"
 #include <wlr/backend.h>
-#include <wlr/render/allocator.h>
 #include <wlr/render/wlr_renderer.h>
+#include <wlr/types/wlr_data_device.h>
+#include <wlr/types/wlr_output_layout.h>
+#include <wlr/types/wlr_subcompositor.h>
 #include <wlr/util/log.h>
+#include <wlr/types/wlr_scene.h>
+
+#include "kwm_server.h"
+#include "output.h"
 
 int kwm_server_init(struct s_kwm_server *server) {
   wlr_log(WLR_INFO, "Initializing KiranWM server...");
@@ -45,12 +50,28 @@ int kwm_server_init(struct s_kwm_server *server) {
   }
   wlr_log(WLR_INFO, "wlroots allocator created successfully.");
 
+
+  wlr_compositor_create(server->display, 5, server->renderer);
+  wlr_subcompositor_create(server->display);
+  wlr_data_device_manager_create(server->display);
+
+  server->output_layout = wlr_output_layout_create(server->display);
+
+  wl_list_init(&server->outputs);
+  server->new_output.notify = server_new_output;
+  wl_signal_add(&server->backend->events.new_output, &server->new_output);
+
+  server->scene = wlr_scene_create();
+  server->scene_layout =
+      wlr_scene_attach_output_layout(server->scene, server->output_layout);
+
   wlr_log(WLR_INFO, "KiranWM server initialized successfully.");
   return true;
 }
 
-void kwm_server_fini(struct s_kwm_server *server) {
+void kwm_server_finish(struct s_kwm_server *server) {
   wlr_log(WLR_INFO, "Cleaning up KiranWM server...");
+  wl_list_remove(&server->new_output.link);
 
   if (server->allocator) {
     wlr_allocator_destroy(server->allocator);

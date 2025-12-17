@@ -1,5 +1,6 @@
-#include "kwm_server.h"
 #include <wlr/util/log.h>
+
+#include "kwm_server.h"
 
 int main(int argc, char **argv) {
   wlr_log_init(WLR_DEBUG, NULL);
@@ -8,16 +9,12 @@ int main(int argc, char **argv) {
 
   if (!kwm_server_init(&server)) {
     wlr_log(WLR_ERROR, "Failed to initialize KiranWM server.");
-    kwm_server_fini(&server);
+    kwm_server_finish(&server);
     return 1;
   }
 
-  // TODO: Add the Wayland socket, start the backend, run the event loop,
+  wlr_log(WLR_INFO, "KiranWM is running!");
 
-  wlr_log(
-      WLR_INFO,
-      "KiranWM is running! (Currently not starting the backend or event loop)");
-
-  kwm_server_fini(&server);
+  kwm_server_finish(&server);
   return 0;
 }

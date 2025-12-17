@@ -21,4 +21,3 @@ target_link_libraries(kiranwm PRIVATE ${WLROOTS_LIBRARIES})
 target_link_directories(kiranwm PRIVATE ${WLROOTS_LIBRARY_DIRS})
 
 add_definitions(${WLROOTS_CFLAGS_OTHER})
-
